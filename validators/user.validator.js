@@ -2,19 +2,36 @@ const { check } = require('express-validator');
 const validateResults = require('../middlewares/validator');
 const User = require('../models/user');
 
-const idValidation          = check('_id').isMongoId();
-const nameValidation        = check('name').notEmpty();
-const lastNameValidation    = check('lastname').notEmpty();
-const passwordValidation    = check('password').isLength({ min: 6 });
-const emailValidation       = check('email').isEmail();
-const avatarValidation      = check('avatar').notEmpty();
-const roleValidation        = check('role').isIn(['ADMIN', 'USER']);
+const idValidation  = check('_id')
+    .isMongoId()
+    .withMessage("El _id no es válido");
+
+const nameValidation = check('name')
+    .notEmpty()
+    .withMessage("El nombre es requerido");
+
+const lastNameValidation = check('lastname')
+    .notEmpty()
+    .withMessage("El apeliido es requerido");
+
+const passwordValidation = check('password')
+    .isLength({ min: 6 })
+    .withMessage("La contrasena no puede ser menor a 6 dígitos");
+
+const avatarValidation = check('avatar')
+    .notEmpty()
+    .withMessage("El avatar es requerido");
+
+const roleValidation = check('role')
+    .isIn(['ADMIN', 'USER'])
+    .withMessage("El rol no es válido");
+
 
 const createValidation = [
     nameValidation,
     lastNameValidation,
-    passwordValidation.notEmpty(),
-    emailValidation
+    passwordValidation.notEmpty().withMessage("La contrasena es requerida"),
+    check('email').notEmpty().isEmail()
     .custom(async (email) => {
         const existingUser =await User.findOne({ email }); 
         if (existingUser) {
@@ -29,17 +46,20 @@ const createValidation = [
 
 const updateValidation = [
     idValidation,
-    // nameValidation,
-    // lastNameValidation,
-    // emailValidation
-    // .custom(async (email) => {
-    //     const existingUser =await User.findOne({ email }); 
-    //     if (existingUser) {
-    //         throw new Error('Email already in use')
-    //     }
-    // }),
-    // avatarValidation,
-    // roleValidation,
+    nameValidation,
+    lastNameValidation,
+    check('email').notEmpty().isEmail()
+    .custom(async (email, {req}) => {
+        const { _id } = req.params;
+        const existingUser = await User.findOne({ email }); 
+        if(existingUser){
+            if (existingUser._id.toString() != _id) {
+                throw new Error('El correo ya se encuentra registrado')
+            }
+        }
+    }),
+    avatarValidation,
+    roleValidation,
     (req, res, next) => validateResults(req, res, next)
 ];
 

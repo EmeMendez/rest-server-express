@@ -14,28 +14,11 @@ const getProduct = (req, res) => {
 };
 
 const createProduct = async (req, res) => {
-    const {
-        name,
-        lastname,
-        email,
-        password,
-        role,
-        avatar
-    } = req.body;
-
+    const { name, lastname, email, password, role, avatar } = req.body;
     const createdAt = Date.now();
-    const user = new User({
-        name,
-        lastname,
-        email,
-        password,
-        role,
-        avatar,
-        createdAt
-    });
+    const user = new User({name, lastname, email, password, role, avatar, createdAt });
     const salt = bcrypt.genSaltSync();
     user.password = bcrypt.hashSync( password, salt);
-
     await user.save();
 
     res.json({
@@ -44,9 +27,17 @@ const createProduct = async (req, res) => {
     });
 };
 
-const updateProduct =  (req, res) => {
+const updateProduct =  async (req, res) => {
+    const { _id } = req.params;
+    const { name, lastname, email, role, avatar } = req.body;
+
+    const user = await User.findById(
+        _id, 
+        { name, lastname, email, role, avatar },
+         { returnOriginal: false }
+        );
     res.json({
-        message: 'si actualiza el usuario'
+        user
     });
 };
 
