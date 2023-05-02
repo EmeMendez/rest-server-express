@@ -11,7 +11,7 @@ router.get('/:id', getProduct);
 
 router.post('/', createValidation ,createProduct);
 
-router.patch('/:_id', updateValidation, updateProduct);
+router.patch('/:id', updateValidation, updateProduct);
 
 router.delete('/:id', deleteProduct);
 

@@ -15,8 +15,7 @@ const getProduct = (req, res) => {
 
 const createProduct = async (req, res) => {
     const { name, lastname, email, password, role, avatar } = req.body;
-    const createdAt = Date.now();
-    const user = new User({name, lastname, email, password, role, avatar, createdAt });
+    const user = new User({name, lastname, email, password, role, avatar });
     const salt = bcrypt.genSaltSync();
     user.password = bcrypt.hashSync( password, salt);
     await user.save();
@@ -28,17 +27,17 @@ const createProduct = async (req, res) => {
 };
 
 const updateProduct =  async (req, res) => {
-    const { _id } = req.params;
+    const { id } = req.params;
     const { name, lastname, email, role, avatar } = req.body;
 
-    const user = await User.findById(
-        _id, 
+    const user = await User.findOneAndUpdate(
+        id, 
         { name, lastname, email, role, avatar },
-         { returnOriginal: false }
-        );
-    res.json({
-        user
-    });
+        { 
+            returnDocument: true,
+            new: true
+        });
+    res.json({ user });
 };
 
 const deleteProduct = (req, res) => {

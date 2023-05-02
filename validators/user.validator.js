@@ -2,9 +2,6 @@ const { check } = require('express-validator');
 const validateResults = require('../middlewares/validator');
 const User = require('../models/user');
 
-const idValidation  = check('_id')
-    .isMongoId()
-    .withMessage("El _id no es válido");
 
 const nameValidation = check('name')
     .notEmpty()
@@ -45,15 +42,24 @@ const createValidation = [
 
 
 const updateValidation = [
-    idValidation,
+    check('id')
+    .isMongoId()
+    .withMessage("El id no es válido")
+    .custom(async (id) => {
+        const existingUser = await User.findOne({ _id: id }); 
+        if(!existingUser){
+                throw new Error('El id no es válido')
+        }
+    }),
+
     nameValidation,
     lastNameValidation,
     check('email').notEmpty().isEmail()
     .custom(async (email, {req}) => {
-        const { _id } = req.params;
-        const existingUser = await User.findOne({ email }); 
+        const { id } = req.params;
+        const existingUser = await User.findOne({ _id: id }); 
         if(existingUser){
-            if (existingUser._id.toString() != _id) {
+            if (existingUser._id.toString() != id) {
                 throw new Error('El correo ya se encuentra registrado')
             }
         }
