@@ -2,6 +2,7 @@ const { check } = require('express-validator');
 const validateResults = require('../middlewares/validator');
 const User = require('../models/user');
 
+const idValidation          = check('_id').isMongoId();
 const nameValidation        = check('name').notEmpty();
 const lastNameValidation    = check('lastname').notEmpty();
 const passwordValidation    = check('password').isLength({ min: 6 });
@@ -26,6 +27,22 @@ const createValidation = [
 ];
 
 
+const updateValidation = [
+    idValidation,
+    // nameValidation,
+    // lastNameValidation,
+    // emailValidation
+    // .custom(async (email) => {
+    //     const existingUser =await User.findOne({ email }); 
+    //     if (existingUser) {
+    //         throw new Error('Email already in use')
+    //     }
+    // }),
+    // avatarValidation,
+    // roleValidation,
+    (req, res, next) => validateResults(req, res, next)
+];
 
 
-module.exports = { createValidation };
+
+module.exports = { createValidation, updateValidation };

@@ -46,7 +46,7 @@ const createProduct = async (req, res) => {
 
 const updateProduct =  (req, res) => {
     res.json({
-        message: 'patch users'
+        message: 'si actualiza el usuario'
     });
 };
 
