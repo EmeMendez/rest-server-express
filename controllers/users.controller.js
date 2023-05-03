@@ -1,35 +1,29 @@
 const User = require('../models/user'); 
 const bcrypt = require('bcryptjs');
 
-const getProducts = (req, res) => {
-    res.json({
-        message: 'get users'
-    });
+const getUsers = async (req, res) => {
+    const users = await User.find(); 
+    res.json(users);
 };
 
-const getProduct = (req, res) => {
-        res.json({
-            message: 'get one user',
-        });
+const getUser = async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findOne({ '_id': id });
+    res.json(user);
 };
 
-const createProduct = async (req, res) => {
+const createUser = async (req, res) => {
     const { name, lastname, email, password, role, avatar } = req.body;
     const user = new User({name, lastname, email, password, role, avatar });
     const salt = bcrypt.genSaltSync();
     user.password = bcrypt.hashSync( password, salt);
     await user.save();
-
-    res.json({
-        message: 'create product',
-        user
-    });
+    res.status(201).json(user);
 };
 
-const updateProduct =  async (req, res) => {
+const updateUser =  async (req, res) => {
     const { id } = req.params;
     const { name, lastname, email, role, avatar } = req.body;
-
     const user = await User.findOneAndUpdate(
         id, 
         { name, lastname, email, role, avatar },
@@ -37,19 +31,19 @@ const updateProduct =  async (req, res) => {
             returnDocument: true,
             new: true
         });
-    res.json({ user });
+    res.json(user);
 };
 
-const deleteProduct = (req, res) => {
-    res.json({
-        message: 'delete users'
-    });
+const deleteProduct = async (req, res) => {
+    const { id } = req.params;
+    await User.findByIdAndDelete(id)
+    res.status(204).json();
 };
 
 module.exports = {
-    getProducts,
-    getProduct,
-    createProduct,
-    updateProduct,
+    getUsers,
+    getUser,
+    createUser,
+    updateUser,
     deleteProduct
 }

@@ -1,18 +1,18 @@
 const { Router } = require('express');
 const router = Router();
-const { createValidation, updateValidation } = require('../validators/user.validator');
+const { createUserValidation, updateUserValidation, getUserValidation, deleteUserValidation } = require('../validators/user.validator');
 
-const { getProducts, getProduct, createProduct, updateProduct, deleteProduct } = require('../controllers/users.controller');
+const { getUsers, getUser, createUser, updateUser, deleteProduct } = require('../controllers/users.controller');
 
 
-router.get('/', getProducts);
+router.get('/', getUsers);
 
-router.get('/:id', getProduct);
+router.get('/:id', getUserValidation , getUser);
 
-router.post('/', createValidation ,createProduct);
+router.post('/', createUserValidation ,createUser);
 
-router.patch('/:id', updateValidation, updateProduct);
+router.patch('/:id', updateUserValidation, updateUser);
 
-router.delete('/:id', deleteProduct);
+router.delete('/:id', deleteUserValidation ,deleteProduct);
 
 module.exports = router;
