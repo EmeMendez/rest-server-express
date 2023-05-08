@@ -2,8 +2,19 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 
 const getUsers = async (req, res) => {
-    const users = await User.find(); 
-    res.json(users);
+    const { limit, offset, is_active } = req.query;
+    const query = { isActive : is_active};
+
+    const [ total, users ] = await Promise.all([
+        User.count(query),
+        User.find(query)
+            .skip(Number(offset))
+            .limit(Number(limit))
+    ]);
+    res.json({
+        total,
+        users,
+    });
 };
 
 const getUser = async (req, res) => {
@@ -33,11 +44,10 @@ const updateUser =  async (req, res) => {
         });
     res.json(user);
 };
-
-const deleteProduct = async (req, res) => {
+const deleteUser = async (req, res) => {
     const { id } = req.params;
-    await User.findByIdAndDelete(id)
-    res.status(204).json();
+    const user = await User.findByIdAndUpdate(id, { isActive : false}, {new: true});
+    res.json(user);
 };
 
 module.exports = {
@@ -45,5 +55,6 @@ module.exports = {
     getUser,
     createUser,
     updateUser,
-    deleteProduct
+    deleteUser,
 }
+

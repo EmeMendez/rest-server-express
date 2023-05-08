@@ -67,7 +67,7 @@ const updateUserValidation = [
     .custom(async (email, {req}) => {
         const { id } = req.params;
         if(!id.match(/^[0-9a-fA-F]{24}$/)) return
-        const existingUser = await User.findOne({ '_id': id }); 
+        const existingUser = await User.findOne({ 'email': email }); 
         if(existingUser){
             if (existingUser._id.toString() != id) {
                 throw new Error('El correo ya se encuentra registrado')

@@ -29,7 +29,8 @@ const UserSchema = Schema(
             enum: ['ADMIN','USER'],
             required: true,
         },
-        isActive:{
+        is_active:{
+            alias: 'isActive',
             type: Boolean,
             required: true,
             default: true
