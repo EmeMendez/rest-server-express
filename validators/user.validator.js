@@ -1,5 +1,4 @@
 const { check } = require('express-validator');
-const mongoose = require('mongoose');
 const validateResults = require('../middlewares/validator');
 const User = require('../models/user');
 
@@ -45,7 +44,7 @@ const createUserValidation = [
     .notEmpty().withMessage("El correo eletrónico es requerido")
     .isEmail().withMessage("El correo eletrónico no tiene un formato válido")
     .custom(async (email) => {
-        const existingUser =await User.findOne({ email }); 
+        const existingUser = await User.findOne({ email }); 
         if (existingUser) {
             throw new Error('Email already in use')
         }
