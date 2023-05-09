@@ -1,8 +1,12 @@
+const { generateJWT } = require('../helpers/generate-jwt');
+const User = require('../models/user');
 
-const login = ( req, res ) => {
+const login = async ( req, res ) => {
     try{
-        const { email, password } = req.body;
-        res.json({ email, password })
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+        const token = await generateJWT(user.id);
+        res.json({ user, token })
     }
     catch(error){
         console.log(error);
