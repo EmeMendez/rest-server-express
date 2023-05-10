@@ -1,18 +1,19 @@
 const { Router } = require('express');
-const router = Router();
 const { createUserValidation, updateUserValidation, getUserValidation, deleteUserValidation } = require('../validators/user.validator');
-
+const { validatorJWT } = require('../middlewares/validator-auth');
 const { getUsers, getUser, createUser, updateUser, deleteUser } = require('../controllers/users.controller');
+const { validateRole }= require('../middlewares/validator-role');
 
+const router = Router();
 
-router.get('/', getUsers);
+router.get('/', [validatorJWT, validateRole('ADMIN','USER')] ,getUsers);
 
-router.get('/:id', getUserValidation , getUser);
+router.get('/:id', [ validatorJWT, validateRole('ADMIN','USER') ,getUserValidation ] , getUser);
 
-router.post('/', createUserValidation ,createUser);
+router.post('/', [ validatorJWT, validateRole('ADMIN') ,createUserValidation ] ,createUser);
 
-router.put('/:id', updateUserValidation, updateUser);
+router.put('/:id', [ validatorJWT, validateRole('ADMIN') ,updateUserValidation ], updateUser);
 
-router.patch('/:id', deleteUserValidation ,deleteUser);
+router.patch('/:id', [ validatorJWT, validateRole('ADMIN') ,deleteUserValidation ] ,deleteUser);
 
 module.exports = router;

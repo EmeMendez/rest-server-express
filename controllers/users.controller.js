@@ -20,7 +20,8 @@ const getUsers = async (req, res) => {
 const getUser = async (req, res) => {
     const { id } = req.params;
     const user = await User.findOne({ '_id': id });
-    res.json(user);
+    const auth = req.user;
+    res.json({user, auth });
 };
 
 const createUser = async (req, res) => {
