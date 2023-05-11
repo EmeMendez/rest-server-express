@@ -14,6 +14,6 @@ router.post('/', [ validatorJWT, validateRole('ADMIN') ,createUserValidation ] ,
 
 router.put('/:id', [ validatorJWT, validateRole('ADMIN') ,updateUserValidation ], updateUser);
 
-router.patch('/:id', [ validatorJWT, validateRole('ADMIN') ,deleteUserValidation ] ,deleteUser);
+router.delete('/:id', [ validatorJWT, validateRole('ADMIN') ,deleteUserValidation ] ,deleteUser);
 
 module.exports = router;
