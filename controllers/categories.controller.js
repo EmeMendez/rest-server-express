@@ -37,7 +37,7 @@ const createCategory = async (req, res) => {
 const updateCategory =  async (req, res) => {
     const { id } = req.params;
     const { name } = req.body;
-    const category = await Category.findOneAndUpdate(id,{ name : name.toUpperCase()},
+    const category = await Category.findByIdAndUpdate(id,{ name : name.toUpperCase()},
         { 
             returnDocument: true,
             new: true

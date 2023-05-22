@@ -9,7 +9,7 @@ const validatorJWT =  async ( req, res, next) => {
         return res.status(401).json({ msg: 'Unauthorized'});
     }
     try {
-        const { uuid }  = jwt.verify(token, config.publicOrPrivateKey);
+        const { uuid }  = jwt.verify(token, config.privateKey);
         const user      = await User.findById(uuid);
         if(!user){
             return res.status(401).json({ msg: 'Unathorized'});
