@@ -26,6 +26,10 @@ const ProductSchema = Schema(
             default: 0 ,
             required: [true, 'The field quantity is required'],            
         },
+        image: {
+            type: String,
+            required: [true, 'The field image is required'],      
+        }, 
         is_active:{
             alias: 'isActive',
             type: Boolean,

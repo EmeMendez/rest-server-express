@@ -1,7 +1,10 @@
 const Product = require('../models/product'); 
+const { saveFile } = require('../helpers/save-file.js');
 
 const createProduct = async (req, res) => {
     const { name,category,price,available } = req.body;
+    const { image } = req.body.files;
+    const imagePath = saveFile(image, 'products');
     const  { _id } = req.user
     const newProduct = new Product(
         { 
@@ -9,7 +12,8 @@ const createProduct = async (req, res) => {
             user : _id,
             category,
             price,
-            available
+            available,
+            image: imagePath
     });
     await newProduct.save();
    const product = await Product.findOne({'_id' : newProduct._id })

@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { port, mongoUri } = require('../config/app');
 const { mongoConnection } = require('../config/database');
-
+const fileUpload = require('express-fileupload');
 class Server {
 
     constructor(){
@@ -26,6 +26,12 @@ class Server {
         //Lectura y parseo del body
         this.app.use(express.json());
         this.app.use(express.static('public'));
+        this.app.use(express.static('storage'));
+        this.app.use(fileUpload({
+            useTempFiles : true,
+            tempFileDir : '/tmp/',
+            createParentPath: true
+        }));
     }
 
     listen(){
