@@ -1,5 +1,6 @@
+const path = require('path');
 const Product = require('../models/product'); 
-const { saveFile } = require('../helpers/save-file.js');
+const { saveFile,deleteFile } = require('../helpers/handler-files.js');
 
 const createProduct = async (req, res) => {
     const { name,category,price,available } = req.body;
@@ -78,25 +79,26 @@ const deleteProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     const { id } = req.params;
-
     const { name,category,price,available } = req.body;
-    await Product.findByIdAndUpdate(id,
-    { 
-        name,
-        category,
-        price,
-        available
-    });
-   const product = await Product.findOne({'_id' : id })
-   .populate('user', ['name','lastname','email', 'avatar', 'role', 'is_active','created_in_google', 'created_at', 'updated_at'])
-   .populate({
+    const updatedData = { name, category, price, available }
+    if(req.files && req.files.image){
+        const { image } = await Product.findOne({'_id' : id });
+        const imageFullPath = path.join(__dirname,'../',image);
+        deleteFile(imageFullPath);
+        const newImage = saveFile(req.files.image, 'products');
+        updatedData.image = newImage;
+    }
+    await Product.findByIdAndUpdate(id,updatedData);
+    const product = await Product.findOne({'_id' : id })
+    .populate('user', ['name','lastname','email', 'avatar', 'role', 'is_active','created_in_google', 'created_at', 'updated_at'])
+    .populate({
        path: 'category',
        select: ['name', 'is_active', 'user', 'created_at', 'updated_at'],
        populate: { 
            path: 'user',
            select: ['name','lastname','email', 'avatar', 'role', 'is_active','created_in_google', 'created_at', 'updated_at']
        }
-     })
+    })
     res.json(product);
 };
 

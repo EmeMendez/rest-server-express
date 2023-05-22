@@ -101,6 +101,20 @@ const updateProductValidation =  [
     .notEmpty().withMessage('La propiedad disponible es requerida')
     .isBoolean().withMessage('La propiedad disponible debe ser boleana'),
 
+    check('files')
+    .custom(async (files, {req}) => {
+        if(req.files){
+            const image = req.files.image;
+            if(image){
+                const validExtensions = ['png', 'jpg', 'jpeg', 'gift'];
+                const  [imageExtension] = image.name.split('.').slice(-1);
+                if(!validExtensions.includes(imageExtension)){
+                    throw new Error(`La extensión de la imagen no es válida, solo se permite ${validExtensions}`);
+                }        
+            }
+        }
+    }), 
+
     (req, res, next) => validationResult(req,res, next)
 
 ];

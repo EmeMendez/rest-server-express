@@ -26,7 +26,7 @@ class Server {
         //Lectura y parseo del body
         this.app.use(express.json());
         this.app.use(express.static('public'));
-        this.app.use(express.static('storage'));
+        this.app.use('storage', express.static('storage'));
         this.app.use(fileUpload({
             useTempFiles : true,
             tempFileDir : '/tmp/',
